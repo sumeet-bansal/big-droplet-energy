@@ -141,6 +141,8 @@ LoadModule deflate_module modules/mod_deflate.so
   gzip_http_version 1.1;
   gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
 ```
+- a 100kb file called sample100kb.txt was placed in the root dir 
+- the file was inspected in the browser and was compressed down to 27.6kb
 
 ### 9. Obscure Server identity
 
