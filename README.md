@@ -142,3 +142,71 @@ LoadModule deflate_module modules/mod_deflate.so
   gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
 ```
 
+### 9. Obscure Server identity
+
+- mod_security was installed and utilized to change the server header for apache
+- the following lines were added to /etc/apache2/mods-enabled/security2.conf:
+```
+SecRuleEngine on
+SecServerSignature " "
+```
+- These two lines were added to /etc/nginx/nginx.conf to hide server and other headers:
+```
+server_tokens off;
+more_clear_headers Server;
+```
+
+### 10. Run PHP
+
+- php7.0 was installed on apache
+- php7.1 was installed on nginx
+- a file called phpinfo.php was created with the following source:
+```
+<?php
+phpinfo();
+?>
+```
+- the following was added to /etc/nginx/sites-available/default
+```
+location ~ \.php$ {
+	include snippets/fastcgi-php.conf;
+	# With php7.0-cgi alone:
+	#fastcgi_pass 127.0.0.1:9000;
+	# With php7.0-fpm:
+	fastcgi_pass unix:/run/php/php7.1-fpm.sock;
+	fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+}
+```
+
+### 11. Deliver Clean URLS
+
+- the following code was added to /var/www/html/.htaccess to disable .html and .php on apache
+```
+RewriteEngine on
+RewriteCond %{THE_REQUEST} /([^.]+)\.php [NC]
+RewriteRule ^ /%1 [NC,L,R]
+
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^ %{REQUEST_URI}.php [NC,L]
+
+RewriteEngine on
+RewriteCond %{THE_REQUEST} /([^.]+)\.html [NC]
+RewriteRule ^ /%1 [NC,L,R]
+
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^ %{REQUEST_URI}.html [NC,L]
+```
+- the following code was added to /etc/nginx/sites-available/default to disable .html and .php on nginx
+```
+location / {
+	try_files $uri $uri.html $uri/ @extensionless-php;
+	index index.html index.htm index.php;
+	auth_basic "Restricted Content";
+	auth_basic_user_file /etc/nginx/.htpasswd;
+}
+
+
+location @extensionless-php {
+	rewrite ^(.*)$ $1.php last;
+}	
+```
