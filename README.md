@@ -17,3 +17,24 @@ git push prod master
 ```
 
 To see web analytics, go [here](http://143.93.85.224:8081/apachereport)(apache) or [here](http://142.93.85.224:8082/nginxreport)(nginx)
+
+
+## documentation
+
+### 1: Employ password protection
+
+- To employ basic authentication, we used the utility htpasswd to generate 
+username and encrypted password files
+- Then, the file /etc/apache2/sites-enabled/000-default.conf was modified 
+to include the following:
+```
+<Directory "/var/www/html">
+                AuthType Basic
+                AuthName "Restricted Content"
+                AuthUserFile /etc/apache2/.htpasswd
+                Require valid-user
+</Directory>
+```
+- This restricted the site's content until valid user credentials were provided.
+
+### 2: 
