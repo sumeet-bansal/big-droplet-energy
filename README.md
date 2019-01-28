@@ -16,4 +16,4 @@ git remote set-url --add --push prod https://github.com/sumeet-bansal/big-drople
 git push prod master
 ```
 
-To see web analytics, go [here](http://143.93.85.224:8081/report)(apache) or [here](http://143.93.85.224:8082/report)(nginx)
+To see web analytics, go [here](http://143.93.85.224:8081/apachereport)(apache) or [here](http://142.93.85.224:8082/nginxreport)(nginx)
