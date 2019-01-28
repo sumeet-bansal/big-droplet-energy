@@ -15,3 +15,5 @@ git remote set-url --add --push prod ssh://user@142.93.85.224/var/repo/.git
 git remote set-url --add --push prod https://github.com/sumeet-bansal/big-droplet-energy.git
 git push prod master
 ```
+
+To see web analytics, go [here](http://143.93.85.224:8081/report)(apache) or [here](http://143.93.85.224:8082/report)(nginx)
