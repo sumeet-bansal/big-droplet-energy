@@ -16,10 +16,9 @@ git remote set-url --add --push prod https://github.com/sumeet-bansal/big-drople
 git push prod master
 ```
 
-To see web analytics, go [here](http://143.93.85.224:8081/apachereport)(apache) or [here](http://142.93.85.224:8082/nginxreport)(nginx)
+To see web analytics, go [here](http://143.93.85.224:8081/apachereport) for Apache or [here](http://142.93.85.224:8082/nginxreport) for nginx.
 
-
-## documentation
+## Documentation
 
 ### 1: Employ password protection
 
@@ -211,4 +210,38 @@ location / {
 location @extensionless-php {
 	rewrite ^(.*)$ $1.php last;
 }	
+```
+
+### 12. Set Up Express App
+To set up the Express app, we mostly followed the instructions found [here](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-node-js-application-for-production-on-ubuntu-16-04). First, we created an Express app using [`express-generator`](https://expressjs.com/en/starter/generator.html) at `/var/www/html/app` (on port 5000) and added the following `server` block to `/etc/nginx/sites-available/default`:
+```
+server {
+	listen 8083;
+	listen [::]:8083;
+	server_name _;
+	location ~ /\. {
+		deny all;
+	}
+	location / {
+		proxy_pass http://localhost:5000;
+		proxy_http_version 1.1;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection 'upgrade';
+		proxy_set_header Host $host;
+		proxy_cache_bypass $http_upgrade;
+}
+```
+The primary difference between our approach and the instructions linked above was using the command `pm2 start npm --start` isntead of `pm2 start app.js`. Then, we set up authentication by adding the following lines to the above `server.location` block:
+```
+auth_basic "Restricted Content";
+auth_basic_user_file /etc/nginx/.htpasswd;
+```
+This uses the same authentication credentials as other ports as well. Finally, we set up a 403 page by adding the following lines under the `server` block:
+```
+error_page 403 /403.html;
+location = /403.html {
+	root /var/www/html/app/views;
+	allow all;
+	internal;
+}
 ```
