@@ -10,11 +10,15 @@ var colors = ['blue','yellow','white'];
 
 /* GET helloworld page. */
 router.get('/', function(req, res, next) {
-    var now = new Date();
-    var str = now.getUTCFullYear().toString() + "/" +
-          (now.getUTCMonth() + 1).toString() +
-          "/" + now.getUTCDate() + " " + now.getUTCHours() +
-          ":" + now.getUTCMinutes() + ":" + now.getUTCSeconds();
+    var m = new Date();
+    var str =
+        m.getUTCFullYear() + "/" +
+        ("0" + (m.getUTCMonth()+1)).slice(-2) + "/" +
+        ("0" + m.getUTCDate()).slice(-2) + " " +
+        ("0" + m.getUTCHours()).slice(-2) + ":" +
+        ("0" + m.getUTCMinutes()).slice(-2) + ":" +
+        ("0" + m.getUTCSeconds()).slice(-2);
+
 
   res.render('helloworld', {
       datetime: str,
