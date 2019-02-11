@@ -3,6 +3,9 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res) {
+	if (!req.query.response) {
+		return res.render('hellodata_error');
+	}
 	let format = req.query.response.toLowerCase();
 	let dt = new Date();
 	if (format == "xml") {
@@ -11,7 +14,7 @@ router.get('/', function(req, res) {
 	if (format == "json") {
 		return res.send({"msg": "Hello Data it's " + dt.getTime()});
 	}
-	res.render('helloworld_error');
+	return res.render('hellodata_error');
 });
 
 module.exports = router;
