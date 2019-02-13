@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var session = require('express-session');
 
 var app = express();
 
@@ -16,11 +17,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  secret: 'bigdropletenergy',
+  saveUninitialized: true,
+  resave: true
+}));
 
 app.use('/', require('./routes/index'));
 app.use('/helloworld', require('./routes/helloworld'));
 app.use('/hellodata', require('./routes/hellodata'));
 app.use('/env', require('./routes/env'));
+app.use('/sessionpage1', require('./routes/sessionpage1'));
+app.use('/sessionpage2', require('./routes/sessionpage2'));
+app.use('/clearsession', require('./routes/clearsession'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -37,5 +46,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('404');
 });
+
 
 module.exports = app;
