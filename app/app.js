@@ -32,6 +32,7 @@ app.use('/sessionpage2', require('./routes/sessionpage2'));
 app.use('/clearsession', require('./routes/clearsession'));
 app.use('/formcollection', require('./routes/formcollection'));
 app.use('/echo', require('./routes/echo'));
+app.use('/api', require('./routes/api'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
