@@ -88,39 +88,25 @@ router.put('/update', function(req, res) {
 		params.admin = 0;
 	}
 	const connection = mysql.createConnection(options);
-	connection.connect(err1 => {
-		if (err1) {
+	connection.connect(err => {
+		if (err) {
 			return res.status(500).send({
 				message: 'Unable to connect to the database.'
 			});
 		}
-		connection.query('SELECT * FROM users WHERE login = ?', [params.login], (err2, results, fields) => {
-			if (err2) {
+		connection.query(
+			'UPDATE users SET fullname = ?, admin = ? WHERE login = ?',
+			[params.fullname, params.admin, params.login], (error, results, fields) => {
 				connection.end();
-				return res.status(500).send({
-					message: 'Database operation failed.'
-				});
-			}
-			if (results.length == 0) {
-				connection.end();
-				return res.status(400).send({
-					message: 'Requested user not found.'
-				});
-			}
-			connection.query(
-				'UPDATE users SET fullname = ?, admin = ? WHERE login = ?',
-				[params.fullname, params.admin, params.login], (err3, results, fields) => {
-					connection.end();
-					if (err3) {
-						return res.status(500).send({
-							message: 'Database update failed.'
-						});
-					}
-					return res.status(200).send({
-						message: 'Database update successful.'
+				if (error) {
+					return res.status(500).send({
+						message: 'Database update failed.'
 					});
+				}
+				return res.status(200).send({
+					message: 'Database update successful.'
 				});
-		});
+			});
 	});
 });
 
